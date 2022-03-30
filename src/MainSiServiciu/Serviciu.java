@@ -242,8 +242,6 @@ public class Serviciu {
         }
     }
 
-    //metoda pentru a modifica o programare
-
     //metoda pentru a adauga o afectiune
     public void adaugaAfectiune(){
         System.out.print("Nume client: ");
