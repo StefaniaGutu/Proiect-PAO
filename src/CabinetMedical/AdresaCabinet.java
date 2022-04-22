@@ -1,8 +1,4 @@
-package Cabinet_medical;
-
-import Persoana.Client;
-import Persoana.Doctor;
-import Programare.Programare;
+package CabinetMedical;
 
 public class AdresaCabinet {
     private String oras;

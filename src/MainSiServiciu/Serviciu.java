@@ -1,11 +1,11 @@
 package MainSiServiciu;
 
-import Cabinet_medical.Cabinet_Medical;
+import CabinetMedical.CabinetMedical;
 import Persoana.Client;
 import Persoana.Doctor;
 import Programare.Programare;
-import Programare.Programare_Cu_Plata;
-import Programare.Programare_Cu_Asigurare;
+import Programare.ProgramareCuPlata;
+import Programare.ProgramareCuAsigurare;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,11 +15,11 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class Serviciu {
-    final private Cabinet_Medical cabinet;
+    final private CabinetMedical cabinet;
     final private Scanner console;
 
     public Serviciu(){
-        this.cabinet = new Cabinet_Medical();
+        this.cabinet = new CabinetMedical();
         this.console = new Scanner(System.in);
     }
 
@@ -135,7 +135,7 @@ public class Serviciu {
                     System.out.print("Modalitate plata: ");
                     String modalitate = console.nextLine();
 
-                    prog_noua = new Programare_Cu_Plata(doctor, client, d, ora, nr_cabinet, cost, modalitate);
+                    prog_noua = new ProgramareCuPlata(doctor, client, d, ora, nr_cabinet, cost, modalitate);
                 }
                 else {
                     System.out.print("Cod asigurare: ");
@@ -145,7 +145,7 @@ public class Serviciu {
                     System.out.print("Tip asigurare: ");
                     String tip_asigurare = console.nextLine();
 
-                    prog_noua = new Programare_Cu_Asigurare(doctor, client, d, ora, nr_cabinet, cod, tip_asigurare);
+                    prog_noua = new ProgramareCuAsigurare(doctor, client, d, ora, nr_cabinet, cod, tip_asigurare);
                 }
 
                 this.cabinet.adaugaProgramare(prog_noua);

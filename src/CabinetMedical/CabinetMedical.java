@@ -1,4 +1,4 @@
-package Cabinet_medical;
+package CabinetMedical;
 
 import Persoana.Client;
 import Persoana.Doctor;
@@ -8,20 +8,20 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Cabinet_Medical {
+public class CabinetMedical {
     Set<Doctor> doctori;
     Set<Client> clienti;
     List<Programare> programari;
     AdresaCabinet adresa;
 
-    public Cabinet_Medical(){
+    public CabinetMedical(){
         doctori = new HashSet<Doctor>();
         clienti = new HashSet<Client>();
         programari = new ArrayList<Programare>();
         adresa = new AdresaCabinet();
     }
 
-    public Cabinet_Medical(Set<Doctor> doctori, Set<Client> clienti, List<Programare> programari, AdresaCabinet adresa){
+    public CabinetMedical(Set<Doctor> doctori, Set<Client> clienti, List<Programare> programari, AdresaCabinet adresa){
         this.doctori = doctori;
         this.clienti = clienti;
         this.programari = programari;

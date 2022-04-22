@@ -6,14 +6,14 @@ import Persoana.Doctor;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Programare_Cu_Plata extends Programare {
+public class ProgramareCuPlata extends Programare {
     private Integer cost;
     private String modalitate_plata;
 
-    public Programare_Cu_Plata(){}
+    public ProgramareCuPlata(){}
 
-    public Programare_Cu_Plata(Doctor doctor, Client client, Date data, String ora, Integer nr_cabinet,
-                               Integer cost, String modalitate_plata){
+    public ProgramareCuPlata(Doctor doctor, Client client, Date data, String ora, Integer nr_cabinet,
+                             Integer cost, String modalitate_plata){
         super(doctor, client, data, ora, nr_cabinet);
         this.cost = cost;
         this.modalitate_plata = modalitate_plata;
