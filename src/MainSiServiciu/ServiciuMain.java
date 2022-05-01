@@ -1,26 +1,99 @@
 package MainSiServiciu;
 
 import CabinetMedical.CabinetMedical;
+import CabinetMedical.AdresaCabinet;
 import Persoana.Client;
 import Persoana.Doctor;
 import Programare.Programare;
 import Programare.ProgramareCuPlata;
 import Programare.ProgramareCuAsigurare;
+import ServiciiCSV.CSVReader;
+import ServiciiCSV.CSVWriter;
+import ServiciiCSV.ServiciuAudit;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
-public class Serviciu {
+public class ServiciuMain {
     final private CabinetMedical cabinet;
     final private Scanner console;
+    CSVReader csvReader;
+    CSVWriter csvWriter;
+    ServiciuAudit serviciuAudit;
 
-    public Serviciu(){
+    public ServiciuMain(){
         this.cabinet = new CabinetMedical();
         this.console = new Scanner(System.in);
+        this.csvReader = CSVReader.getInstance();
+        this.csvWriter = CSVWriter.getInstance();
+        this.serviciuAudit = ServiciuAudit.getInstance();
+    }
+
+    //metoda pentru a incarca fisierele CSV
+    public void incarcaCSV(){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        // incarcare clienti
+        String file = "CSVFiles/clienti.csv";
+        List<String[]> list = csvReader.readCSVFile(file);
+        for(String[] line : list){
+            int nr_afectiuni = Integer.parseInt(line[2]);
+            Set<String> afectiuni = new HashSet<String>();
+            for(var j = 1; j <= nr_afectiuni; j++){
+                afectiuni.add(line[j+2]);
+            }
+            Client client_nou = new Client(line[0], line[1], afectiuni);
+            this.cabinet.adaugaClient(client_nou);
+        }
+
+        // incarcare doctori
+        file = "CSVFiles/doctori.csv";
+        list = csvReader.readCSVFile(file);
+        for(String[] line : list){
+            Doctor doctor_nou = new Doctor(line[0], line[1], line[2]);
+            this.cabinet.adaugaDoctor(doctor_nou);
+        }
+
+        // incarcare programari cu asigurare
+        file = "CSVFiles/programariCuAsigurare.csv";
+        list = csvReader.readCSVFile(file);
+        for(String[] line : list){
+            Date d = new Date();
+            try {
+                d = sdf.parse(line[2]);
+            } catch (ParseException e) {
+
+                e.printStackTrace();
+            }
+            ProgramareCuAsigurare prog_noua = new ProgramareCuAsigurare(
+                    this.cabinet.gasesteDoctor(line[0]), this.cabinet.gasesteClient(line[1]), d, line[3],
+                    Integer.parseInt(line[4]), line[5], line[6]);
+            this.cabinet.adaugaProgramare(prog_noua);
+        }
+
+        // incarcare programari cu plata
+        file = "CSVFiles/programariCuPlata.csv";
+        list = csvReader.readCSVFile(file);
+        for(String[] line : list){
+            Date d = new Date();
+            try {
+                d = sdf.parse(line[2]);
+            } catch (ParseException e) {
+
+                e.printStackTrace();
+            }
+            ProgramareCuPlata prog_noua = new ProgramareCuPlata(
+                    this.cabinet.gasesteDoctor(line[0]), this.cabinet.gasesteClient(line[1]), d, line[3],
+                    Integer.parseInt(line[4]), Integer.parseInt(line[5]), line[6]);
+            this.cabinet.adaugaProgramare(prog_noua);
+        }
+
+        // incarcare adresa
+        file = "CSVFiles/adresa.csv";
+        list = csvReader.readCSVFile(file);
+        String[] line = list.get(0);
+        AdresaCabinet adresa = new AdresaCabinet(line[0], line[1], Integer.parseInt(line[2]));
+        this.cabinet.setAdresa(adresa);
     }
 
     // metoda pentru a afisa meniul cu actiuni
@@ -45,6 +118,8 @@ public class Serviciu {
 
     public void afisareCabinet(){
         System.out.print(cabinet.toString());
+
+        serviciuAudit.scrieAudit("afisareCabinet");
     }
 
     // metoda pentru a adauga un client
@@ -71,6 +146,9 @@ public class Serviciu {
         Client client_nou = new Client(nume, data, afectiuni);
         this.cabinet.adaugaClient(client_nou);
         System.out.print("Clientul a fost adaugat cu succes! \n\n");
+
+        csvWriter.scrieCSVFile(client_nou);
+        serviciuAudit.scrieAudit("adaugaClient");
     }
 
     //metoda pentru a adauga un doctor
@@ -87,6 +165,9 @@ public class Serviciu {
         Doctor doctor_nou = new Doctor(nume, data, specialitate);
         this.cabinet.adaugaDoctor(doctor_nou);
         System.out.print("Doctorul a fost adaugat cu succes! \n\n");
+
+        csvWriter.scrieCSVFile(doctor_nou);
+        serviciuAudit.scrieAudit("adaugaDoctor");
     }
 
     //metoda pentru a adauga o programare
@@ -126,7 +207,6 @@ public class Serviciu {
                 System.out.print("Tipul programarii (1 - Cu plata; 2 - Cu asigurare): ");
                 int tip = console.nextInt();
 
-                Programare prog_noua;
                 if(tip == 1){
                     System.out.print("Cost: ");
                     int cost = console.nextInt();
@@ -135,20 +215,24 @@ public class Serviciu {
                     System.out.print("Modalitate plata: ");
                     String modalitate = console.nextLine();
 
-                    prog_noua = new ProgramareCuPlata(doctor, client, d, ora, nr_cabinet, cost, modalitate);
+                    ProgramareCuPlata prog_noua = new ProgramareCuPlata(doctor, client, d, ora, nr_cabinet, cost, modalitate);
+                    this.cabinet.adaugaProgramare(prog_noua);
+                    csvWriter.scrieCSVFile(prog_noua);
                 }
                 else {
+                    String aux = console.nextLine();
                     System.out.print("Cod asigurare: ");
                     String cod = console.nextLine();
 
-                    String aux = console.nextLine();
+                    //aux = console.nextLine();
                     System.out.print("Tip asigurare: ");
                     String tip_asigurare = console.nextLine();
 
-                    prog_noua = new ProgramareCuAsigurare(doctor, client, d, ora, nr_cabinet, cod, tip_asigurare);
+                    ProgramareCuAsigurare prog_noua = new ProgramareCuAsigurare(doctor, client, d, ora, nr_cabinet, cod, tip_asigurare);
+                    this.cabinet.adaugaProgramare(prog_noua);
+                    csvWriter.scrieCSVFile(prog_noua);
                 }
 
-                this.cabinet.adaugaProgramare(prog_noua);
                 System.out.print("\n");
                 System.out.print("Programarea a fost adaugata cu succes! \n\n");
             }
@@ -159,6 +243,8 @@ public class Serviciu {
         else{
             System.out.print("Nu exista niciun doctor cu numele dat! \n\n");
         }
+
+        serviciuAudit.scrieAudit("adaugaProgramare");
     }
 
     //metoda pentru a sterge un client
@@ -174,6 +260,8 @@ public class Serviciu {
         else{
             System.out.print("Nu exista niciun client cu numele dat! \n\n");
         }
+
+        serviciuAudit.scrieAudit("stergeClient");
     }
 
     //metoda pentru a sterge un doctor
@@ -189,6 +277,8 @@ public class Serviciu {
         else{
             System.out.print("Nu exista niciun doctor cu numele dat! \n\n");
         }
+
+        serviciuAudit.scrieAudit("stergeDoctor");
     }
 
     //metoda pentru a sterge o programare
@@ -240,6 +330,8 @@ public class Serviciu {
         else{
             System.out.print("Nu exista niciun doctor cu numele dat! \n\n");
         }
+
+        serviciuAudit.scrieAudit("stergeProgramare");
     }
 
     //metoda pentru a adauga o afectiune
@@ -257,6 +349,8 @@ public class Serviciu {
         else{
             System.out.print("Nu exista niciun client cu numele dat! \n\n");
         }
+
+        serviciuAudit.scrieAudit("adaugaAfectiune");
     }
 
     //metoda pentru a afisa istoricul unui pacient
@@ -279,6 +373,8 @@ public class Serviciu {
         else{
             System.out.print("Nu exista niciun client cu numele dat! \n\n");
         }
+
+        serviciuAudit.scrieAudit("afisareIstoric");
     }
 
     //metoda pentru a afisa toti pacientii cu o afectiune data
@@ -287,6 +383,8 @@ public class Serviciu {
         String afectiune = console.nextLine();
 
         cabinet.afisarePacientiCuAfectiune(afectiune);
+
+        serviciuAudit.scrieAudit("afisarePacientiCuAfectiune");
     }
 
     //metoda pentru a modifica o programare
@@ -338,6 +436,8 @@ public class Serviciu {
         else{
             System.out.print("Nu exista niciun doctor cu numele dat! \n\n");
         }
+
+        serviciuAudit.scrieAudit("modificaProgramare");
     }
 
     //metoda pentru a seta adresa cabinetului
@@ -355,5 +455,7 @@ public class Serviciu {
         cabinet.getAdresa().setOras(oras);
         cabinet.getAdresa().setStrada(strada);
         cabinet.getAdresa().setNumar(nr);
+
+        serviciuAudit.scrieAudit("setareAdresa");
     }
 }

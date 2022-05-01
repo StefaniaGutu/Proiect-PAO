@@ -29,4 +29,12 @@ public class Doctor extends Persoana {
 
         return output;
     }
+
+    public String convertToCSV(){
+        String s = "";
+        s += this.nume + ",";
+        s += this.data_nastere + ",";
+        s += this.specialitate;
+        return s;
+    }
 }

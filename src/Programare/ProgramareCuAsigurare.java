@@ -49,4 +49,18 @@ public class ProgramareCuAsigurare extends Programare {
 
         return output;
     }
+
+    @Override
+    public String convertToCSV(){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String s = "";
+        s += this.doctor.getNume() + ",";
+        s += this.client.getNume() + ",";
+        s += sdf.format(this.data) + ",";
+        s += this.ora + ",";
+        s += this.nr_cabinet + ",";
+        s += this.cod_asigurare + ",";
+        s += this.tip;
+        return s;
+    }
 }

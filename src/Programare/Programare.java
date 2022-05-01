@@ -75,4 +75,14 @@ public class Programare {
 
         return output;
     }
+
+    public String convertToCSV(){
+        String s = "";
+        s += this.doctor.getNume() + ",";
+        s += this.client.getNume() + ",";
+        s += this.data + ",";
+        s += this.ora + ",";
+        s += this.nr_cabinet;
+        return s;
+    }
 }

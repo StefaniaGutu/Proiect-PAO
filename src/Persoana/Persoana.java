@@ -35,4 +35,11 @@ public class Persoana {
 
         return output;
     }
+
+    public String convertToCSV(){
+        String s = "";
+        s += nume + ",";
+        s += data_nastere + ",";
+        return s;
+    }
 }
