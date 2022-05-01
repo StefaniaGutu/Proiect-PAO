@@ -27,3 +27,7 @@
 11. Afisare toti pacientii cu o afectiune data
 12. Setare adresa cabinet
 
+## Etapa 2
+- servicii singleton generice pentru citirea si scrierea din fisiere de tip CSV
+- incarcarea datelor din fisiere la pornirea programului
+- serviciu de audit care scrie într-un fișier de tip CSV de fiecare data când este executată una dintre acțiunile descrise mai sus. Structura fișierului: nume_actiune, timestamp
