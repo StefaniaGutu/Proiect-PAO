@@ -15,14 +15,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class ServiciuMain {
+public class ServiciuMainCSV {
     final private CabinetMedical cabinet;
     final private Scanner console;
     CSVReader csvReader;
     CSVWriter csvWriter;
     ServiciuAudit serviciuAudit;
 
-    public ServiciuMain(){
+    public ServiciuMainCSV(){
         this.cabinet = new CabinetMedical();
         this.console = new Scanner(System.in);
         this.csvReader = CSVReader.getInstance();

@@ -127,6 +127,13 @@ public class CabinetMedical {
                  break;
             }
         }
+
+        List<Programare> copie_programari = new ArrayList<Programare>(programari);
+        for(Programare prog : copie_programari){
+            if(nume_client.equals(prog.getClient().getNume())){
+                programari.remove(prog);
+            }
+        }
     }
 
     public void stergeDoctor(String nume_doctor) {
@@ -134,6 +141,13 @@ public class CabinetMedical {
             if(nume_doctor.equals(doctor.getNume())){
                 doctori.remove(doctor);
                 break;
+            }
+        }
+
+        List<Programare> copie_programari = new ArrayList<Programare>(programari);
+        for(Programare prog : copie_programari){
+            if(nume_doctor.equals(prog.getDoctor().getNume())){
+                programari.remove(prog);
             }
         }
     }

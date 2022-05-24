@@ -5,7 +5,11 @@ public class AdresaCabinet {
     private String strada;
     private Integer numar;
 
-    public AdresaCabinet(){}
+    public AdresaCabinet(){
+        this.oras = "Bucuresti";
+        this.strada = "Independentei";
+        this.numar = 10;
+    }
 
     public AdresaCabinet(String oras, String strada, Integer numar){
         this.oras = oras;
